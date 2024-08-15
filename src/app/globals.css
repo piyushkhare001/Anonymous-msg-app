@@ -60,10 +60,12 @@
 }
 
 @layer base {
-  * {
-    @apply border-border;
-  }
-  body {
-    @apply bg-background text-foreground;
+
+}
+
+@media only screen and (min-width: 300px) {
+  .footer{
+ 
+    text-align: center;
   }
 }
