@@ -88,7 +88,7 @@ export async function POST(request:Request) {
           );
    
 
-        return  Response.json({ success: true, message: 'sign up sucessfull' });
+     
     }catch(error :any){
        console.log(error , " sign up failed")
        return  Response.json( { success: false, message: 'sign up failed' });
