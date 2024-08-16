@@ -21,13 +21,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-    
+    <div>
         <AuthProvider>
 
         {children}
       <Toaster />
       </AuthProvider>
-
+      </div>
       </body>
     </html>
   );

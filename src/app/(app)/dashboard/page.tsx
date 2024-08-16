@@ -41,7 +41,7 @@ const form = useForm({
    const fetchAcceptMessages = useCallback(async () => {
     setIsSwitchLoading(true);
     try {
-      const response = await axios.get<ApiResponse>('/api/accept-messages');
+      const response = await axios.get<ApiResponse>('/api/accept-message');
       setValue('acceptMessages', response.data.isAcceptingMessage);
     } catch (error) {
       const axiosError = error as AxiosError<ApiResponse>;
@@ -62,7 +62,7 @@ const fetchMessages = useCallback(async(refresh : boolean = false) => {
   setLoading(true)
 setIsSwitchLoading(true)
 try {
-  const response = await axios.get<ApiResponse>('/api/get-meessages')
+  const response = await axios.get<ApiResponse>('/api/get-messages')
   setMessages(response.data.messages || [])
 } catch (error) {
   if (refresh) {
@@ -115,9 +115,16 @@ const handelSwitchChange = async()=> {
     return <div className=' flex justify-center align-middle font-thin text-2xl'>Please log in again </div>
   }
 }
-const {username} = session?.user ?? 'defaultUsername';
-const baseUrl = `${window.location.protocol}//${window.location.host}`;
-const profileUrl = `${baseUrl}/u/${username}`;
+
+const [profileUrl, setProfileUrl] = useState('');
+useEffect(() => {
+  if (typeof window !== 'undefined') {
+    const { username } = session?.user || 'defaultUsername';
+    const baseUrl = `${window.location.protocol}//${window.location.host}`;
+    setProfileUrl(`${baseUrl}/u/${username}`);
+  }
+}, [session]);
+
 
 const copyToClipboard = () => {
   navigator.clipboard.writeText(profileUrl);
@@ -128,7 +135,7 @@ const copyToClipboard = () => {
 };
 
   return (
-    <div className=" my-8 mx-4 md:mx-8 lg:mx-auto p-6 flex flex-col gap-7 bg-white rounded w-full max-w-6xl">
+    <div className=" my-8 mx-4 md:mx-8 lg:mx-auto p-6 flex flex-col gap-3 bg-white rounded w-full max-w-6xl">
       <h1 className="text-4xl font-bold mb-4">User Dashboard</h1>
 
       <div className="mb-4">

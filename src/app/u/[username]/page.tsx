@@ -44,7 +44,7 @@ export default function SendMessage() {
     isLoading: isSuggestLoading,
     error,
   } = useCompletion({
-    api: '/api/suggest-messages',
+    api: '/api/suggest-message',
     initialCompletion: initialMessageString,
   });
 
