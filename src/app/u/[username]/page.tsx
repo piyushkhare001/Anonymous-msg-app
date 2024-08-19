@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios, { AxiosError } from 'axios';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
@@ -31,33 +31,37 @@ const parseStringMessages = (messageString: string): string[] => {
   return messageString.split(specialChar);
 };
 
-const initialMessageString =
-  "What's your favorite movie?||Do you have any pets?||What's your dream job?";
+// const initialMessageString =
+//   "What's your favorite movie?||Do you have any pets?||What's your dream job?";
 
 export default function SendMessage() {
+
+
   const params = useParams<{ username: string }>();
   const username = params.username;
 
-  const {
-    complete,
-    completion,
-    isLoading: isSuggestLoading,
-    error,
-  } = useCompletion({
-    api: '/api/suggest-message',
-    initialCompletion: initialMessageString,
-  });
+  // const {
+  //   complete,
+  //   completion,
+  //   isLoading: isSuggestLoading,
+  //   error,
+  // } = useCompletion({
+  //   api: '/api/suggest-message',
+  //   initialCompletion: initialMessageString,
+  
+      
+   
 
   const form = useForm<z.infer<typeof messageSchema>>({
     resolver: zodResolver(messageSchema),
   });
 
-  const messageContent = form.watch('content');
+ const messageContent = form.watch('content');
 
   const handleMessageClick = (message: string) => {
     form.setValue('content', message);
   };
-
+  const [data, setData] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
 
   const onSubmit = async (data: z.infer<typeof messageSchema>) => {
@@ -86,14 +90,54 @@ export default function SendMessage() {
     }
   };
 
+
+  function getRandomQuestions(text: string, numQuestions: number = 3): string[] {
+    // Step 1: Split the string into an array of questions
+    const questionsArray = text.split('||').map(q => q.trim()).filter(q => q.length > 0);
+    const filteredQuestions = questionsArray.filter(q => /^W.*\?$/.test(q));
+    // Step 2: Shuffle the array
+    const shuffledArray = filteredQuestions.sort(() => 0.5 - Math.random());
+    
+    // Step 3: Return the first numQuestions elements
+    return shuffledArray.slice(0, numQuestions);
+}
+
+
+// Example usage
+ const questionsString = data;
+
+ const randomQuestions = getRandomQuestions(questionsString);
+// console.log(randomQuestions);
+
+
   const fetchSuggestedMessages = async () => {
     try {
-      complete('');
-    } catch (error) {
-      console.error('Error fetching messages:', error);
-      // Handle error appropriately
+      // complete('');
+
+      const response = await fetch('/api/suggest-message', {
+        method: 'POST',
+      });
+    
+      if (response.ok) {
+        const result = await response.json();
+        setData(result.result);
+        console.log(data)
+    }  
+  }catch(error){
+    const axiosError = error as AxiosError<ApiResponse>;
+    toast({
+      title: 'Error',
+      description:
+        axiosError.response?.data.message ?? 'Failed to sent message',
+      variant: 'destructive',
     }
-  };
+    )
+  }
+}
+
+useEffect( () =>{
+  fetchSuggestedMessages()
+} , [])
 
   return (
     <div className="container mx-auto my-8 p-6 bg-white rounded max-w-4xl">
@@ -136,34 +180,33 @@ export default function SendMessage() {
 
       <div className="space-y-4 my-8">
         <div className="space-y-2">
-          <Button
-            onClick={fetchSuggestedMessages}
-            className="my-4"
-            disabled={isSuggestLoading}
+          <div
+           
+            className="my-4 mt-7 text-2xl font-bold mb-6 text-center"
+          
           >
-            Suggest Messages
-          </Button>
-          <p>Click on any message below to select it.</p>
+           AI Suggest Messages for you
+          </div>
+          <p className='text-center'>Click on any message below to select it.</p>
         </div>
         <Card>
           <CardHeader>
             <h3 className="text-xl font-semibold">Messages</h3>
           </CardHeader>
-          <CardContent className="flex flex-col space-y-4">
-            {error ? (
-              <p className="text-red-500">{error.message}</p>
-            ) : (
-              parseStringMessages(completion).map((message, index) => (
-                <Button
+          <CardContent className="flex flex-col space-y-4 ">
+            
+             {
+              randomQuestions.map((message, index) => (
+                <button
                   key={index}
-                  variant="outline"
-                  className="mb-2"
+                 
+                  className="mb-2 text-center border-dark-300 border p-2 rounded-md "
                   onClick={() => handleMessageClick(message)}
                 >
                   {message}
-                </Button>
+                </button>
               ))
-            )}
+            } 
           </CardContent>
         </Card>
       </div>
@@ -175,5 +218,6 @@ export default function SendMessage() {
         </Link>
       </div>
     </div>
-  );
+  )
+  
 }

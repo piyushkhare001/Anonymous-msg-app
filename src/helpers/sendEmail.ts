@@ -1,5 +1,5 @@
 
-import VerificationEmail from "../../emails/verificationMail";
+
 import React from "react";
 const nodemailer = require('nodemailer');
 
