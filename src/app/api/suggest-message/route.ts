@@ -45,7 +45,7 @@ import { HfInference } from '@huggingface/inference';
   
 
   const prompt =
-  "Create a list of  open-ended and engaging questions formatted as a single string. Each question should be separated by '||'. These questions are for an anonymous social messaging platform, like Qooh.me, and should be suitable for a diverse audience. Avoid personal or sensitive topics, focusing instead on universal themes that encourage friendly interaction";
+  "Create a list of  open-ended and engaging questions formatted as a single string. Each question should be separated by '||'. These questions are for an anonymous social messaging platform";
   export async function POST(req: NextRequest) {
     try {
       const response = Hf.textGenerationStream({
