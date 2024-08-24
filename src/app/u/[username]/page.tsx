@@ -135,9 +135,7 @@ export default function SendMessage() {
   }
 }
 
-useEffect( () =>{
-  fetchSuggestedMessages()
-} , [])
+
 
   return (
     <div className="container mx-auto my-8 p-6 bg-white rounded max-w-4xl">
@@ -189,6 +187,7 @@ useEffect( () =>{
           </div>
           <p className='text-center'>Click on any message below to select it.</p>
         </div>
+        <Button onClick={fetchSuggestedMessages}>Suggest Message</Button>
         <Card>
           <CardHeader>
             <h3 className="text-xl font-semibold">Messages</h3>
