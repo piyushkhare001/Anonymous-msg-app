@@ -94,7 +94,10 @@ const {text}  = await generateText({
 })
  return NextResponse.json({ result: text });
                   
-  }catch(err){
-    console.log(err)
-  }
+  } catch (error) {
+     console.error('Error while streaming data:', error);
+      return new NextResponse('Internal Server Error', { status: 500 });
+    }
+   
+  
 }
