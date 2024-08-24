@@ -91,7 +91,7 @@ export default function SendMessage() {
   };
 
 
-  function getRandomQuestions(text: string, ): string[] {
+  function getRandomQuestions(text: string, numQuestions: number = 5): string[] {
     // Step 1: Split the string into an array of questions
     const questionsArray = text.split('||').map(q => q.trim()).filter(q => q.length > 0);
     const filteredQuestions = questionsArray.filter(q => /^W.*\?$/.test(q));
@@ -99,7 +99,7 @@ export default function SendMessage() {
     const shuffledArray = filteredQuestions.sort(() => 0.5 - Math.random());
     
     // Step 3: Return the first numQuestions elements
-    return shuffledArray
+    return shuffledArray.slice(0, numQuestions);
 }
 
 
